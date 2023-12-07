@@ -1,0 +1,12 @@
+.cache
+.vim
+*.swp
+input.txt
+input.txt*
+lib
+lib64
+include
+build
+bin
+pyvenv.cfg
+CMakeUserPresets.json
