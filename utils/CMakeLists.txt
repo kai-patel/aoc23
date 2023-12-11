@@ -4,11 +4,13 @@ add_library(
     utils
     STATIC
     ArgParse.cpp
+    StringUtils.cpp
     )
 
 target_include_directories(
     utils
     PUBLIC
+    "${PROJECT_SOURCE_DIR}/utils/include"
     Boost
     )
 
