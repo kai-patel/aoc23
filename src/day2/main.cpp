@@ -53,17 +53,8 @@ bool solve_line(std::string &line) {
 
   return true;
 }
-} // namespace day1
 
-int main(int argc, char *argv[]) {
-  const auto &args = utils::get_args(argc, argv);
-  if (!args.has_value()) {
-    std::cerr << "No input!" << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  auto input = std::ifstream{args->input, std::ios::in};
-
+uint32_t solve(std::ifstream &input) {
   std::string line;
   uint32_t line_number = 0;
   std::vector<uint32_t> results;
@@ -76,10 +67,79 @@ int main(int argc, char *argv[]) {
 
     ++line_number;
   }
-
   const auto result = std::accumulate(results.begin(), results.end(), 0U);
+  return result;
+}
+} // namespace day1
 
-  std::cout << result << '\n';
+namespace day2 {
+
+uint32_t solve_line(std::string &line) {
+  std::vector<std::string> split;
+  boost::split(split, line, boost::is_any_of(":"));
+
+  std::vector<std::string> sets;
+  boost::split(sets, split[1], boost::is_any_of(";"));
+
+  uint32_t max_red{0};
+  uint32_t max_green{0};
+  uint32_t max_blue{0};
+
+  for (const auto &set : sets) {
+    std::vector<std::string> cubes;
+    boost::split(cubes, set, boost::is_any_of(","));
+
+    for (auto &cube : cubes) {
+      boost::trim_left(cube);
+      std::vector<std::string> cube_split;
+      boost::split(cube_split, cube, boost::is_any_of(" "));
+
+      if (cube_split[1] == "red") {
+        max_red =
+            std::max(max_red, static_cast<uint32_t>(std::stoi(cube_split[0])));
+      }
+      if (cube_split[1] == "green") {
+        max_green = std::max(max_green,
+                             static_cast<uint32_t>(std::stoi(cube_split[0])));
+      }
+      if (cube_split[1] == "blue") {
+        max_blue =
+            std::max(max_blue, static_cast<uint32_t>(std::stoi(cube_split[0])));
+      }
+    }
+  }
+
+  return max_red * max_green * max_blue;
+}
+
+uint32_t solve(std::ifstream &input) {
+  std::string line;
+  uint32_t line_number = 0;
+  std::vector<uint32_t> results;
+
+  while (std::getline(input, line)) {
+    results.emplace_back(day2::solve_line(line));
+  }
+
+  const auto total = std::accumulate(results.begin(), results.end(), 0U);
+  return total;
+}
+
+} // namespace day2
+
+int main(int argc, char *argv[]) {
+  const auto &args = utils::get_args(argc, argv);
+  if (!args.has_value()) {
+    std::cerr << "No input!" << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  auto input = std::ifstream{args->input, std::ios::in};
+
+  std::cout << day1::solve(input) << '\n';
+  input.clear();
+  input.seekg(0);
+  std::cout << day2::solve(input) << '\n';
 
   return EXIT_SUCCESS;
 }
